@@ -103,7 +103,7 @@ def load_geometry(obj_file_path: str) -> Geometry:
     https://paulbourke.net/dataformats/obj/
     """
 
-    # Geometery elements
+    # Geometry elements
     vertices = []
     normals = []
     texture_coords = []

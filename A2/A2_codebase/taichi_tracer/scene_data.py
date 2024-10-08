@@ -11,13 +11,12 @@ from .ray import Ray, HitData
 class SceneData:
 
     def __init__(
-        self,
-        geometry: Geometry,
-        material_library: MaterialLibrary,
-        environment: Environment,
-        ray_intersector: RayIntersector,
-        ) -> None:
-
+            self,
+            geometry: Geometry,
+            material_library: MaterialLibrary,
+            environment: Environment,
+            ray_intersector: RayIntersector,
+    ) -> None:
         self.geometry = geometry
         self.material_library = material_library
         self.environment = environment
