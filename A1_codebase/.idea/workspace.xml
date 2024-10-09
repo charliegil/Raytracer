@@ -6,10 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="cee70b73-df20-4bf6-b8b0-2da6ef15d1d5" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/interactive/A2.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/interactive/A2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/camera.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/camera.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/environment.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/environment.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/ray_intersector.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/ray_intersector.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/sampler.py" afterDir="false" />
     </list>
@@ -126,7 +122,7 @@
       <workItem from="1728491109563" duration="147000" />
       <workItem from="1728491263333" duration="27000" />
       <workItem from="1728491296705" duration="30000" />
-      <workItem from="1728491472017" duration="16033000" />
+      <workItem from="1728491472017" duration="17549000" />
     </task>
     <servers />
   </component>
@@ -138,7 +134,7 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/A1_codebase$Progressive_Renderer.coverage" NAME="A1 Coverage Results" MODIFIED="1728506635423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/A1_codebase$A2.coverage" NAME="A2 Coverage Results" MODIFIED="1728509887605" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$A2.coverage" NAME="A2 Coverage Results" MODIFIED="1728513324592" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/A1_codebase$Progressive_renderer.coverage" NAME="Progressive renderer Coverage Results" MODIFIED="1728424203458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/A1_codebase$A1.coverage" NAME="A1 Coverage Results" MODIFIED="1728400982369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../A2/interactive" />
   </component>

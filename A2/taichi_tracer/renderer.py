@@ -195,6 +195,7 @@ class A2Renderer:
     @ti.kernel
     def render(self):
         self.iter_counter[None] += 1
+
         for x, y in ti.ndrange(self.width, self.height):
             primary_ray = self.camera.generate_ray(x, y, True)
             color = self.shade_ray(primary_ray)
@@ -233,7 +234,7 @@ class A2Renderer:
             f_r = tm.vec3(0.)
 
             # Viewing direction
-            w_o = tm.vec3(ray.direction - shading_point).normalized()  # oriented from the shading point to
+            w_o = tm.vec3(ray.origin - shading_point).normalized()  # oriented from the shading point to
 
             # TODO: Implement Uniform Sampling
             if self.sample_mode[None] == int(self.SampleMode.UNIFORM):
@@ -244,7 +245,7 @@ class A2Renderer:
                     f_r = p_d / tm.pi
 
                 elif alpha > 1:  # Phong
-
+                    # TODO is this the correct normal?
                     w_r = 2.0 * tm.dot(hit_data.normal, w_o) * hit_data.normal - w_o  # reflected view-direction
                     f_r = (p_s * (alpha + 1.0)) / (2.0 * tm.pi) * tm.max(0, (tm.pow(tm.dot(w_r, ray.direction), alpha)))
 
@@ -252,19 +253,23 @@ class A2Renderer:
                 w_j = UniformSampler.sample_direction()
                 shadow_ray.direction = w_j
 
-                # Debugging
+                # TODO Debugging
                 shadow_ray.direction = 2.0 * tm.dot(hit_data.normal, w_o) * hit_data.normal - w_o
 
                 # Check visibility of shadow ray in sampled direction
                 shadow_hit_data = self.scene_data.ray_intersector.query_ray(shadow_ray)
 
+                # TODO debugging
+                # color = tm.vec3(1, 1, 1)
+
                 # If not occluded, compute color
                 if not shadow_hit_data.is_hit:
+                    # TODO debugging
+                    color = tm.vec3(1, 1, 1)
 
                     # # Query environment for l_e
                     # l_e = self.scene_data.environment.query_ray(shadow_ray)
                     # color = l_e * f_r * tm.max(tm.dot(hit_data.normal, w_j), 0)
-                    color = tm.vec3(1, 1, 1)
 
             # TODO: Implement BRDF Sampling
             elif self.sample_mode[None] == int(self.SampleMode.BRDF):

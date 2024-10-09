@@ -13,6 +13,7 @@ class UniformSampler:
     def __init__(self):
         pass
 
+    # TODO check if uniformly created direction is on correct hemisphere
     @staticmethod
     @ti.func
     # Generates a uniformly-sampled ray direction on the sphere using two canonical random variables
