@@ -23,8 +23,6 @@ def main():
             renderer.set_sample_uniform()
         if window.GUI.button("BRDF" + (" [Active]" if sample_mode == A2Renderer.SampleMode.BRDF else "")):
             renderer.set_sample_brdf()
-        if window.GUI.button("Microfacet[546 Only]" + (" [Active]" if sample_mode == A2Renderer.SampleMode.MICROFACET else "")):
-            renderer.set_sample_microfacet()
         window.GUI.end()
 
         if window.get_event() or controller.update():

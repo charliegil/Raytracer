@@ -71,7 +71,9 @@ class RayIntersector(ABC):
                 hit_data.distance = t
                 hit_data.barycentric_coords = tm.vec2(u, v)
 
-                normal = tm.cross(e1, e2).normalized()
+                # Interpolate vertex normals using barycentric coordinates
+                w = 1.0 - u - v
+                normal = (normal_0 * w + normal_1 * u + normal_2 * v).normalized()
 
                 if hit_data.is_backfacing:
                     normal = -normal  # Flip normal if back-facing

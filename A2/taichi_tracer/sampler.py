@@ -20,11 +20,14 @@ class UniformSampler:
         # Algorithm as seen in lecture slides
         xi_1 = ti.random()
         xi_2 = ti.random()
+
         w_z = 2.0 * xi_1 - 1.0
         r = tm.sqrt(1.0 - tm.pow(w_z, 2))
+
         theta = 2.0 * tm.pi * xi_2
         w_x = r * tm.cos(theta)
         w_y = r * tm.sin(theta)
+
         return tm.vec3(w_x, w_y, w_z)
 
     @staticmethod

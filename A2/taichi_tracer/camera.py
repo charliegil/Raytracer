@@ -75,15 +75,10 @@ class Camera:
         )
 
     @ti.func
-    def generate_ray(self, pixel_x: int, pixel_y: int, jitter: bool) -> Ray:
+    def generate_ray(self, pixel_x: int, pixel_y: int, jitter: bool = False) -> Ray:
 
         # Generate ndc coords from pixel index
-        ndc_coords = self.generate_ndc_coords(pixel_x, pixel_y)
-
-        # Apply offset if jitter = True
-        if jitter:
-            ndc_coords.x += (ti.random() - 0.5) * 2.0 / self.width  # [-0.5, 0.5] * pixel width * intensity (trial and error)
-            ndc_coords.y += (ti.random() - 0.5) * 2.0 / self.height  # [-0.5, 0.5] * pixel height
+        ndc_coords = self.generate_ndc_coords(pixel_x, pixel_y, jitter)
 
         # Generate camera coordinates from NDC coords
         cam_coords = self.generate_camera_coords(ndc_coords)
@@ -101,9 +96,17 @@ class Camera:
     #  Generates ndc coordinates from given pixel index, shifts to middle of pixel
     @ti.func
     def generate_ndc_coords(self, pixel_x: int, pixel_y: int, jitter: bool = False) -> tm.vec2:
+        # Initialize offsets for jitter
+        offset_x = 0.0
+        offset_y = 0.0
 
-        ndc_x = (pixel_x + 0.5) / self.width * 2.0 - 1.0
-        ndc_y = (pixel_y + 0.5) / self.height * 2.0 - 1.0
+        if jitter:
+            # Generate a random offset between -0.5 and 0.5 for both x and y
+            offset_x = ti.random() - 0.5
+            offset_y = ti.random() - 0.5
+
+        ndc_x = (pixel_x + 0.5 + offset_x) / self.width * 2.0 - 1.0
+        ndc_y = (pixel_y + 0.5 + offset_y) / self.height * 2.0 - 1.0
         return tm.vec2([ndc_x, ndc_y])
 
     # NDC to camera space transformation

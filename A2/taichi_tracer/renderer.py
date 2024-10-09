@@ -7,6 +7,10 @@ from .camera import Camera
 from .ray import Ray, HitData
 from .scene_data import SceneData
 
+from .sampler import UniformSampler
+from .sampler import BRDF
+from .ray import Ray
+
 
 @ti.data_oriented
 class A1Renderer:
@@ -202,22 +206,77 @@ class A2Renderer:
 
     @ti.func
     def shade_ray(self, ray: Ray) -> tm.vec3:
+
+        # Initialize color to black
         color = tm.vec3(0.)
 
-        '''You can change the structure of the shade ray function however you want as there will be computations that 
-        are the same for all 3 methods 
-        You can have your branching logic anywhere in the code'''
+        # Get hit data
+        hit_data = self.scene_data.ray_intersector.query_ray(ray)
 
-        # TODO: Implement Uniform Sampling
-        if self.sample_mode[None] == int(self.SampleMode.UNIFORM):
-            pass
+        if hit_data.is_hit:
+            shading_point = ray.origin + ray.direction * hit_data.distance  # find intersection point
+
+            # TODO check back-facing?
+
+            # Initialize shadow ray
+            shadow_ray = Ray()
+            shadow_ray.origin = shading_point + self.RAY_OFFSET * hit_data.normal  # offset initial position of
+            # shadow ray by epsilon along normal
+
+            # Get material properties of intersection
+            material = self.scene_data.material_library.materials[hit_data.material_id]  # get hit material
+            alpha = material.Ns  # specular component
+            p_d = material.Kd  # diffuse reflectance
+            p_s = material.Ks  # specular reflectance
+
+            # Initialize brdf value
+            f_r = tm.vec3(0.)
+
+            # Viewing direction
+            w_o = tm.vec3(ray.direction - shading_point).normalized()  # oriented from the shading point to
+
+            # TODO: Implement Uniform Sampling
+            if self.sample_mode[None] == int(self.SampleMode.UNIFORM):
+
+                # Compute BRDF
+                if alpha == 1:  # Diffuse
+
+                    f_r = p_d / tm.pi
+
+                elif alpha > 1:  # Phong
+
+                    w_r = 2.0 * tm.dot(hit_data.normal, w_o) * hit_data.normal - w_o  # reflected view-direction
+                    f_r = (p_s * (alpha + 1.0)) / (2.0 * tm.pi) * tm.max(0, (tm.pow(tm.dot(w_r, ray.direction), alpha)))
+
+                # Sample outgoing shadow ray direction
+                w_j = UniformSampler.sample_direction()
+                shadow_ray.direction = w_j
+
+                # Debugging
+                shadow_ray.direction = 2.0 * tm.dot(hit_data.normal, w_o) * hit_data.normal - w_o
+
+                # Check visibility of shadow ray in sampled direction
+                shadow_hit_data = self.scene_data.ray_intersector.query_ray(shadow_ray)
+
+                # If not occluded, compute color
+                if not shadow_hit_data.is_hit:
+
+                    # # Query environment for l_e
+                    # l_e = self.scene_data.environment.query_ray(shadow_ray)
+                    # color = l_e * f_r * tm.max(tm.dot(hit_data.normal, w_j), 0)
+                    color = tm.vec3(1, 1, 1)
 
             # TODO: Implement BRDF Sampling
-        elif self.sample_mode[None] == int(self.SampleMode.BRDF):
-            pass
+            elif self.sample_mode[None] == int(self.SampleMode.BRDF):
+                pass
 
-        # Microfacet BRDF Sampling
-        elif self.sample_mode[None] == int(self.SampleMode.MICROFACET):
-            pass
+            # Micro-facet BRDF Sampling
+            elif self.sample_mode[None] == int(self.SampleMode.MICROFACET):
+
+                # Evaluate PDF
+                pass
+
+        else:
+            color = self.scene_data.environment.query_ray(ray)
 
         return color
