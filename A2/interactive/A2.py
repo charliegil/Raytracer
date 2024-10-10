@@ -1,5 +1,5 @@
 import taichi as ti
-ti.init(arch=ti.cpu, default_fp=ti.f32, default_ip=ti.i32, debug=True)
+ti.init(arch=ti.gpu, default_fp=ti.f32, default_ip=ti.i32, debug=True)
 
 from taichi_tracer.renderer import A2Renderer
 from taichi_tracer.camera_controller import CameraController
