@@ -7,8 +7,7 @@ from .camera import Camera
 from .ray import Ray, HitData
 from .scene_data import SceneData
 
-from .sampler import UniformSampler
-from .sampler import BRDF
+from .sampler import UniformSampler, BRDF, reflect
 from .ray import Ray
 
 
@@ -227,47 +226,49 @@ class A2Renderer:
             alpha = material.Ns  # specular component
             p_d = material.Kd  # diffuse reflectance
 
-            # Initialize brdf value
-            f_r = tm.vec3(0, 0, 0)
-
             # Viewing direction
             w_o = -ray.direction
 
-            # TODO: Implement Uniform Sampling
+            # Normal
+            normal = hit_data.normal
+
+            # Initialize incident ray, pdf
+            w_i = tm.vec3(0.0)
+            pdf = 0.0
+
+            # Sample incident ray direction depending on sampling type
             if self.sample_mode[None] == int(self.SampleMode.UNIFORM):
 
-                # Sample outgoing shadow ray direction
-                w_j = UniformSampler.sample_direction()
-                shadow_ray.direction = w_j
+                w_i = UniformSampler.sample_direction()
+                pdf = UniformSampler.evaluate_probability()
+
+            # TODO: Implement BRDF Sampling
+            elif self.sample_mode[None] == int(self.SampleMode.BRDF):
+                w_i = BRDF.sample_direction(material, w_o, normal)
+                pdf = BRDF.evaluate_probability(material, w_o, w_i, normal)
+
+            # Micro-facet BRDF Sampling
+            elif self.sample_mode[None] == int(self.SampleMode.MICROFACET):
+                pass
+
+            # Set shadow ray direction to sampled direction
+            shadow_ray.direction = w_i
+
+            # Check visibility of shadow ray in sampled direction
+            shadow_hit_data = self.scene_data.ray_intersector.query_ray(shadow_ray)
+
+            # If not occluded, compute color
+            if not shadow_hit_data.is_hit:
+
+                # Query environment for l_e
+                l_e = self.scene_data.environment.query_ray(shadow_ray)
 
                 # Compute BRDF
-                if alpha == 1:  # Diffuse
+                f_r = BRDF.evaluate_brdf(material, w_o, w_i, normal)
 
-                    f_r = p_d / tm.pi
-
-                elif alpha > 1:  # Phong
-                    w_r = 2.0 * tm.dot(hit_data.normal, w_o) * hit_data.normal - w_o  # reflected view-direction
-                    f_r = (p_d * (alpha + 1.0)) / (2.0 * tm.pi) * tm.max(0, (tm.pow(tm.dot(w_r, w_j), alpha)))
-
-                # Check visibility of shadow ray in sampled direction
-                shadow_hit_data = self.scene_data.ray_intersector.query_ray(shadow_ray)
-
-                # If not occluded, compute color
-                if not shadow_hit_data.is_hit:
-
-                    # Query environment for l_e
-                    l_e = self.scene_data.environment.query_ray(shadow_ray)
-                    color = (l_e * f_r * tm.max(tm.dot(hit_data.normal, w_j), 0)) / UniformSampler.evaluate_probability()
-
-            # # TODO: Implement BRDF Sampling
-            # elif self.sample_mode[None] == int(self.SampleMode.BRDF):
-            #     pass
-            #
-            # # Micro-facet BRDF Sampling
-            # elif self.sample_mode[None] == int(self.SampleMode.MICROFACET):
-            #
-            #     # Evaluate PDF
-            #     pass
+                # Compute final color
+                # color = (l_e * f_r * tm.max(tm.dot(normal, w_i), 0)) / pdf
+                color = l_e
 
         else:
             color = self.scene_data.environment.query_ray(ray)

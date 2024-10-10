@@ -13,7 +13,6 @@ class UniformSampler:
     def __init__(self):
         pass
 
-    # TODO check if uniformly created direction is on correct hemisphere
     @staticmethod
     @ti.func
     # Generates a uniformly-sampled ray direction on the sphere using two canonical random variables
@@ -37,7 +36,6 @@ class UniformSampler:
         return 1. / (4. * tm.pi)
 
 
-# TODO: Implement BRDF Sampling Methods
 @ti.data_oriented
 class BRDF:
     def __init__(self):
@@ -46,17 +44,70 @@ class BRDF:
     @staticmethod
     @ti.func
     def sample_direction(material: Material, w_o: tm.vec3, normal: tm.vec3) -> tm.vec3:
-        pass
+
+        # Sampling routine for canonical orientation
+        alpha = material.Ns
+        xi_1 = ti.random()
+        xi_2 = ti.random()
+
+        w_z = tm.pow(xi_1, 1.0 / (alpha + 1.0))
+        r = tm.sqrt(1.0 - tm.pow(w_z, -2))
+        theta = 2.0 * tm.pi * xi_2
+        w_x = r * tm.cos(theta)
+        w_y = r * tm.sin(theta)
+
+        w_j = tm.vec3(w_x, w_y, w_z)
+
+        frame = tm.mat3(0.0)
+
+        # Rotate direction into appropriate coordinate system
+        if alpha == 1:  # diffuse
+
+            # Orthonormal basis aligned with normal
+            frame = ortho_frames(normal)
+
+        elif alpha > 1:  # phong
+
+            # Orthonormal basis aligned with reflected viewing direction
+            frame = ortho_frames(reflect(w_o, normal))
+
+        w_j = frame @ w_j
+        return tm.normalize(w_j)
 
     @staticmethod
     @ti.func
     def evaluate_probability(material: Material, w_o: tm.vec3, w_i: tm.vec3, normal: tm.vec3) -> float:
-        pass
+
+        alpha = material.Ns
+        pdf = 0.0
+
+        if alpha == 1:  # Diffuse
+            pdf = (1.0 / tm.pi) * tm.max(0, tm.dot(normal, w_i))
+
+        elif alpha > 1:  # Phong
+            w_r = reflect(w_o, normal)
+            pdf = ((alpha + 1.0) / (2 * tm.pi)) * tm.max(0, tm.pow(tm.dot(w_r, w_i), alpha))
+
+        return pdf
 
     @staticmethod
     @ti.func
     def evaluate_brdf(material: Material, w_o: tm.vec3, w_i: tm.vec3, normal: tm.vec3) -> tm.vec3:
-        pass
+
+        alpha = material.Ns
+        p_d = material.Kd
+
+        f_r = tm.vec3(0)
+
+        if alpha == 1:  # Diffuse
+
+            f_r = p_d / tm.pi
+
+        elif alpha > 1:  # Phong
+            w_r = reflect(w_o, normal)  # reflected view-direction
+            f_r = (p_d * (alpha + 1.0)) / (2.0 * tm.pi) * tm.max(0, (tm.pow(tm.dot(w_r, w_i), alpha)))
+
+        return f_r
 
     @staticmethod
     @ti.func
@@ -136,9 +187,23 @@ class MeshLightSampler:
 
 @ti.func
 def ortho_frames(v_z: tm.vec3) -> tm.mat3:
-    pass
+
+    random_vec = tm.normalize(tm.vec3([ti.random(), ti.random(), ti.random()]))
+
+    x_axis = tm.cross(v_z, random_vec)
+    x_axis = tm.normalize(x_axis)
+
+    y_axis = tm.cross(x_axis, v_z)
+    y_axis = tm.normalize(y_axis)
+
+    z_axis = tm.normalize(v_z)
+
+    frame = tm.mat3([x_axis, y_axis, v_z]).transpose()
+
+    return frame
 
 
 @ti.func
 def reflect(ray_direction: tm.vec3, normal: tm.vec3) -> tm.vec3:
-    pass
+    w_o = -ray_direction
+    return 2.0 * tm.dot(normal, w_o) * normal - w_o
