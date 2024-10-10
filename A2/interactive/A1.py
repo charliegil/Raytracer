@@ -1,11 +1,11 @@
 import taichi as ti
-ti.init(arch=ti.gpu, default_fp=ti.f32, default_ip=ti.i32)
+ti.init(arch=ti.cpu, default_fp=ti.f32, default_ip=ti.i32)
+ti.init(debug=True)
 import taichi.math as tm
 
 from taichi_tracer.renderer import A1Renderer
 from taichi_tracer.camera_controller import CameraController
 from taichi_tracer.scene_data_loader import SceneName, load_scene_data
-
 
 def main():
     scene_data = load_scene_data(SceneName.CORNELL_BOX)
@@ -42,8 +42,8 @@ def main():
             renderer.set_shade_material_ID()
         window.GUI.end()
 
-        if window.get_event() or controller.update():
-            renderer.reset()
+        # if window.get_event() or controller.update():
+        #     renderer.reset()
 
 
     while window.running:

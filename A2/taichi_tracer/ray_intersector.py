@@ -48,38 +48,39 @@ class RayIntersector(ABC):
         p_vec = tm.cross(ray.direction, e2)  # intermediate value to improve performance
         det = tm.dot(e1, p_vec)
 
-        if det > self.EPSILON:  # skip computation if ray parallel to plane
+        if ti.abs(det) > self.EPSILON:  # skip computation if ray parallel to plane
             inv_det = 1.0 / det  # intermediate values
             t_vec = ray.origin - v0
             u = inv_det * tm.dot(t_vec, p_vec)
-            q_vec = q_vec = tm.cross(t_vec, e1)
+            q_vec = tm.cross(t_vec, e1)
             v = inv_det * tm.dot(ray.direction, q_vec)
 
             if 0 <= u <= 1 and 0 <= v <= 1 and u + v <= 1:  # skip computation if point outside of triangle edges
                 t = inv_det * tm.dot(e2, q_vec)
 
-                # Populate hit_data
-                hit_data.is_hit = True
+                if t > self.EPSILON:
+                    # Populate hit_data
+                    hit_data.is_hit = True
 
-                if det < 0:
-                    hit_data.is_backfacing = True  # negative determinant means intersection point is occluded from
-                    # camera
-                else:
-                    hit_data.is_backfacing = False
+                    if det < 0:
+                        hit_data.is_backfacing = True  # negative determinant means intersection point is occluded from
+                        # camera
+                    else:
+                        hit_data.is_backfacing = False
 
-                hit_data.triangle_id = triangle_id
-                hit_data.distance = t
-                hit_data.barycentric_coords = tm.vec2(u, v)
+                    hit_data.triangle_id = triangle_id
+                    hit_data.distance = t
+                    hit_data.barycentric_coords = tm.vec2(u, v)
 
-                # Interpolate vertex normals using barycentric coordinates
-                w = 1.0 - u - v
-                normal = (normal_0 * w + normal_1 * u + normal_2 * v).normalized()
+                    # Interpolate vertex normals using barycentric coordinates
+                    w = 1.0 - u - v
+                    normal = (normal_0 * w + normal_1 * u + normal_2 * v).normalized()
 
-                if hit_data.is_backfacing:
-                    normal = -normal  # Flip normal if back-facing
-                hit_data.normal = normal
+                    if hit_data.is_backfacing:
+                        normal = -normal  # Flip normal if back-facing
+                    hit_data.normal = normal
 
-                hit_data.material_id = material_id
+                    hit_data.material_id = material_id
 
         return hit_data
 
