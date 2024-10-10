@@ -267,8 +267,7 @@ class A2Renderer:
                 f_r = BRDF.evaluate_brdf(material, w_o, w_i, normal)
 
                 # Compute final color
-                # color = (l_e * f_r * tm.max(tm.dot(normal, w_i), 0)) / pdf
-                color = l_e
+                color = (l_e * f_r * tm.max(tm.dot(normal, w_i), 0)) / pdf
 
         else:
             color = self.scene_data.environment.query_ray(ray)

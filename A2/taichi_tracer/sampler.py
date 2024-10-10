@@ -56,7 +56,7 @@ class BRDF:
         w_x = r * tm.cos(theta)
         w_y = r * tm.sin(theta)
 
-        w_j = tm.vec3(w_x, w_y, w_z)
+        w = tm.vec3(w_x, w_y, w_z)
 
         frame = tm.mat3(0.0)
 
@@ -71,8 +71,8 @@ class BRDF:
             # Orthonormal basis aligned with reflected viewing direction
             frame = ortho_frames(reflect(w_o, normal))
 
-        w_j = frame @ w_j
-        return tm.normalize(w_j)
+        w = frame @ w
+        return w
 
     @staticmethod
     @ti.func
