@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cee70b73-df20-4bf6-b8b0-2da6ef15d1d5" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/imgui.ini" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../A2/.idea/A2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/.idea/A2.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../A2/interactive/A2.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/interactive/A2.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/renderer.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/sampler.py" afterDir="false" />
     </list>
@@ -53,8 +57,8 @@
       <recent name="$PROJECT_DIR$/../A2/taichi_tracer/scene_data_dir" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.Offline">
-    <configuration name="Interactive" type="PythonConfigurationType" factoryName="Python">
+  <component name="RunManager" selected="Python.offline">
+    <configuration name="interactive" type="PythonConfigurationType" factoryName="Python">
       <module name="A2" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -62,7 +66,7 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="taichi_env_a2" />
+      <option name="SDK_NAME" value="A2" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -77,7 +81,7 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
-    <configuration name="Offline" type="PythonConfigurationType" factoryName="Python">
+    <configuration name="offline" type="PythonConfigurationType" factoryName="Python">
       <module name="A2" />
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -85,7 +89,7 @@
         <env name="PYTHONUNBUFFERED" value="1" />
       </envs>
       <option name="SDK_HOME" value="" />
-      <option name="SDK_NAME" value="taichi_env_a2" />
+      <option name="SDK_NAME" value="A2" />
       <option name="WORKING_DIRECTORY" value="" />
       <option name="IS_MODULE_SDK" value="false" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
@@ -101,8 +105,8 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.Interactive" />
-      <item itemvalue="Python.Offline" />
+      <item itemvalue="Python.offline" />
+      <item itemvalue="Python.interactive" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -126,8 +130,8 @@
       <workItem from="1728491296705" duration="30000" />
       <workItem from="1728491472017" duration="17549000" />
       <workItem from="1728516382055" duration="456000" />
-      <workItem from="1728569772807" duration="7224000" />
-      <workItem from="1728583769921" duration="7994000" />
+      <workItem from="1728569772807" duration="8012000" />
+      <workItem from="1728649997200" duration="5609000" />
     </task>
     <servers />
   </component>
@@ -138,10 +142,11 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/A1_codebase$Progressive_Renderer.coverage" NAME="A1 Coverage Results" MODIFIED="1728506635423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/A1_codebase$Offline.coverage" NAME="Offline Coverage Results" MODIFIED="1728599617679" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/A1_codebase$A2.coverage" NAME="Interactive Coverage Results" MODIFIED="1728598524717" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/A1_codebase$Progressive_renderer.coverage" NAME="Progressive renderer Coverage Results" MODIFIED="1728424203458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/A1_codebase$A1.coverage" NAME="A1 Coverage Results" MODIFIED="1728400982369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../A2/interactive" />
+    <SUITE FILE_PATH="coverage/A1_codebase$A2.coverage" NAME="offline Coverage Results" MODIFIED="1728649823958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$Progressive_renderer.coverage" NAME="Progressive renderer Coverage Results" MODIFIED="1728424203458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$interactive.coverage" NAME="interactive Coverage Results" MODIFIED="1728655160523" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$Progressive_Renderer.coverage" NAME="A1 Coverage Results" MODIFIED="1728506635423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$offline.coverage" NAME="offline Coverage Results" MODIFIED="1728655475046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>

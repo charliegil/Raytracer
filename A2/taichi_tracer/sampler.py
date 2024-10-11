@@ -17,6 +17,7 @@ class UniformSampler:
     @ti.func
     # Generates a uniformly-sampled ray direction on the sphere using two canonical random variables
     def sample_direction() -> tm.vec3:
+
         # Algorithm as seen in lecture slides
         xi_1 = ti.random()
         xi_2 = ti.random()
@@ -51,27 +52,29 @@ class BRDF:
         xi_2 = ti.random()
 
         w_z = tm.pow(xi_1, 1.0 / (alpha + 1.0))
-        r = tm.sqrt(1.0 - tm.pow(w_z, -2))
+        r = tm.sqrt(1.0 - tm.pow(w_z, 2))
         theta = 2.0 * tm.pi * xi_2
         w_x = r * tm.cos(theta)
         w_y = r * tm.sin(theta)
 
         w = tm.vec3(w_x, w_y, w_z)
 
-        frame = tm.mat3(0.0)
+        ortho = tm.mat3(0.0)
 
         # Rotate direction into appropriate coordinate system
         if alpha == 1:  # diffuse
 
             # Orthonormal basis aligned with normal
-            frame = ortho_frames(normal)
+            ortho = ortho_frames(normal)
 
         elif alpha > 1:  # phong
 
             # Orthonormal basis aligned with reflected viewing direction
-            frame = ortho_frames(reflect(w_o, normal))
+            ortho = ortho_frames(reflect(w_o, normal))
 
-        w = frame @ w
+        # Rotate direction using orthonormal frame (brings vector from local to world space)
+        w = ortho @ w
+
         return w
 
     @staticmethod
@@ -109,10 +112,25 @@ class BRDF:
 
         return f_r
 
+    # Computes BRDF factor to resolve instability
     @staticmethod
     @ti.func
-    def evaluate_brdf_factor(material: Material, w_o: tm.vec3, w_i: tm.vec3, normal: tm.vec3) -> tm.vec3:
-        pass
+    def evaluate_brdf_factor(material: Material, w_i: tm.vec3, normal: tm.vec3) -> tm.vec3:
+
+        alpha = material.Ns
+        p_d = material.Kd
+        p_s = material.Kd
+
+        factor = tm.vec3(0)
+
+        # Simplification given in tutorials
+        if alpha == 1:
+            factor = p_d
+
+        elif alpha > 1:
+            factor = p_s * tm.max(tm.dot(normal, w_i), 0)
+
+        return factor
 
 
 # Microfacet BRDF based on PBR 4th edition
@@ -135,7 +153,7 @@ class MicrofacetBRDF:
 
     @staticmethod
     @ti.func
-    def evaluate_brdf(material: Material, w_o: tm.vec3, w_i: tm.vec3, normal: tm.vec3) -> tm.vec3:
+    def evaluate_brdf(material: Material, w_i: tm.vec3, normal: tm.vec3) -> tm.vec3:
         pass
 
 
@@ -185,6 +203,7 @@ class MeshLightSampler:
         pass
 
 
+# Creates an orthonormal frame along axis of alignment
 @ti.func
 def ortho_frames(v_z: tm.vec3) -> tm.mat3:
 
@@ -203,7 +222,7 @@ def ortho_frames(v_z: tm.vec3) -> tm.mat3:
     return frame
 
 
+# Reflects ray direction along normal
 @ti.func
 def reflect(ray_direction: tm.vec3, normal: tm.vec3) -> tm.vec3:
-    w_o = -ray_direction
-    return 2.0 * tm.dot(normal, w_o) * normal - w_o
+    return 2.0 * tm.dot(normal, ray_direction) * normal - ray_direction

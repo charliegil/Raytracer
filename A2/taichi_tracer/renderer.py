@@ -180,7 +180,8 @@ class A2Renderer:
         self.scene_data = scene_data
 
         self.sample_mode = ti.field(shape=(), dtype=int)
-        self.set_sample_uniform()
+        #self.set_sample_uniform()\
+        self.set_sample_brdf()
 
     def set_sample_uniform(self):
         self.sample_mode[None] = self.SampleMode.UNIFORM
@@ -223,8 +224,6 @@ class A2Renderer:
 
             # Get material properties of intersection
             material = self.scene_data.material_library.materials[hit_data.material_id]  # get hit material
-            alpha = material.Ns  # specular component
-            p_d = material.Kd  # diffuse reflectance
 
             # Viewing direction
             w_o = -ray.direction
@@ -242,7 +241,6 @@ class A2Renderer:
                 w_i = UniformSampler.sample_direction()
                 pdf = UniformSampler.evaluate_probability()
 
-            # TODO: Implement BRDF Sampling
             elif self.sample_mode[None] == int(self.SampleMode.BRDF):
                 w_i = BRDF.sample_direction(material, w_o, normal)
                 pdf = BRDF.evaluate_probability(material, w_o, w_i, normal)
@@ -263,11 +261,18 @@ class A2Renderer:
                 # Query environment for l_e
                 l_e = self.scene_data.environment.query_ray(shadow_ray)
 
-                # Compute BRDF
-                f_r = BRDF.evaluate_brdf(material, w_o, w_i, normal)
+                if self.sample_mode[None] == int(self.SampleMode.UNIFORM):
 
-                # Compute final color
-                color = (l_e * f_r * tm.max(tm.dot(normal, w_i), 0)) / pdf
+                    # Compute BRDF
+                    f_r = BRDF.evaluate_brdf(material, w_o, w_i, normal)
+
+                    # Compute final color
+                    color = (l_e * f_r * tm.max(tm.dot(normal, w_i), 0)) / pdf
+
+                elif self.sample_mode[None] == int(self.SampleMode.BRDF):
+
+                    # Compute final color using BRDF factor due to instability
+                    color = l_e * BRDF.evaluate_brdf_factor(material, w_i, normal)
 
         else:
             color = self.scene_data.environment.query_ray(ray)
