@@ -5,13 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cee70b73-df20-4bf6-b8b0-2da6ef15d1d5" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/imgui.ini" beforeDir="false" afterPath="$PROJECT_DIR$/imgui.ini" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/.idea/A2.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/.idea/A2.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/interactive/A2.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/interactive/A2.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/renderer.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/renderer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../A2/taichi_tracer/sampler.py" beforeDir="false" afterPath="$PROJECT_DIR$/../A2/taichi_tracer/sampler.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -131,7 +125,27 @@
       <workItem from="1728491472017" duration="17549000" />
       <workItem from="1728516382055" duration="456000" />
       <workItem from="1728569772807" duration="8012000" />
-      <workItem from="1728649997200" duration="5609000" />
+      <workItem from="1728649997200" duration="6160000" />
+      <workItem from="1728688288746" duration="1006000" />
+      <workItem from="1729878732552" duration="313000" />
+      <workItem from="1730991798203" duration="16000" />
+      <workItem from="1730992539134" duration="15000" />
+      <workItem from="1730992572177" duration="10000" />
+      <workItem from="1730992661512" duration="8000" />
+      <workItem from="1730992685704" duration="6000" />
+      <workItem from="1730992726178" duration="11000" />
+      <workItem from="1730993085178" duration="9000" />
+      <workItem from="1730993106254" duration="13000" />
+      <workItem from="1730993159164" duration="30000" />
+      <workItem from="1730993334219" duration="17000" />
+      <workItem from="1730993379372" duration="16000" />
+      <workItem from="1730993511194" duration="6000" />
+      <workItem from="1730993528411" duration="7000" />
+      <workItem from="1730993546749" duration="5000" />
+      <workItem from="1730993727172" duration="16000" />
+      <workItem from="1730993771989" duration="4000" />
+      <workItem from="1730994502920" duration="13000" />
+      <workItem from="1730997162909" duration="28000" />
     </task>
     <servers />
   </component>
@@ -145,8 +159,8 @@
     <SUITE FILE_PATH="coverage/A1_codebase$A1.coverage" NAME="A1 Coverage Results" MODIFIED="1728400982369" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/../A2/interactive" />
     <SUITE FILE_PATH="coverage/A1_codebase$A2.coverage" NAME="offline Coverage Results" MODIFIED="1728649823958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/A1_codebase$Progressive_renderer.coverage" NAME="Progressive renderer Coverage Results" MODIFIED="1728424203458" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/A1_codebase$interactive.coverage" NAME="interactive Coverage Results" MODIFIED="1728655160523" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$interactive.coverage" NAME="interactive Coverage Results" MODIFIED="1728688463733" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/A1_codebase$Progressive_Renderer.coverage" NAME="A1 Coverage Results" MODIFIED="1728506635423" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
-    <SUITE FILE_PATH="coverage/A1_codebase$offline.coverage" NAME="offline Coverage Results" MODIFIED="1728655475046" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/A1_codebase$offline.coverage" NAME="offline Coverage Results" MODIFIED="1728747824845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
   </component>
 </project>
