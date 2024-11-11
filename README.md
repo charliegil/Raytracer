@@ -1,6 +1,6 @@
-# ECSE 446 Raytracer
+# Raytracer
 
-## Assignment 1 - Triangle Intersections and Normal Interpolation
+## Triangle Intersections and Normal Interpolation
 
 In this assignment, I implemented a simple ray tracer with triangle intersection capabilities and normal interpolation for smooth shading. The environment supports basic scene navigation using the **WASD** keys and includes multiple shading modes to visualize different aspects of our scene.
 
@@ -12,7 +12,7 @@ Below is an example of the Cornell box rendered with my raytracer.
 
 ---
 
-## Assignment 2 - Progressive Rendering, Direct Illumination, and Sampling
+## Progressive Rendering, Direct Illumination, and Sampling
 
 In the second assignment, progressive rendering and ray jittering were added to improve image quality by reducing aliasing. Additionally, we implemented Uniform and BRDF direction sampling along with Probability Density Function (PDF) sampling. This setup and the progressive renderer allow us to achieve smooth rendering results in simple scenes with reasonable performance.
 
