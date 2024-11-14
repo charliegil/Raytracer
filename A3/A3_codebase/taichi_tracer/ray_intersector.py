@@ -15,7 +15,6 @@ class RayIntersector(ABC):
         self.EPSILON = 1e-7
         self.geometry = geometry
 
-
     @abstractmethod
     @ti.func
     def query_ray(ray: Ray) -> HitData:
@@ -90,7 +89,6 @@ class BruteForceRayIntersector(RayIntersector):
 
     def __init__(self, geometry: Geometry) -> None:
         super().__init__(geometry)
-
 
     @ti.func
     def query_ray(self, ray: Ray) -> HitData:

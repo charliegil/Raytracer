@@ -8,7 +8,6 @@ from .geometry import Geometry
 from .materials import MaterialLibrary, Material
 
 
-# TODO: Implement Uniform Sampling Methods
 @ti.data_oriented
 class UniformSampler:
     def __init__(self):
@@ -37,7 +36,6 @@ class UniformSampler:
         return 1. / (4. * tm.pi)
 
 
-# TODO: Implement BRDF Sampling Methods
 @ti.data_oriented
 class BRDF:
     def __init__(self):
@@ -133,9 +131,8 @@ class BRDF:
         return factor
 
 
-# Microfacet BRDF based on PBR 4th edition
+# Micro-facet BRDF based on PBR 4th edition
 # https://www.pbr-book.org/4ed/Reflection_Models/Roughness_Using_Microfacet_Theory#
-# TODO: Implement Microfacet BRDF Methods
 # 546 only deliverable
 @ti.data_oriented
 class MicrofacetBRDF:
@@ -214,18 +211,21 @@ class MeshLightSampler:
     @ti.func
     def compute_triangle_area(self, v0: tm.vec3, v1: tm.vec3, v2: tm.vec3) -> float:
         # TODO: Compute Area of a triangle given the 3 vertices
-        # 
-        # Area of a triangle ABC = 0.5 * | AB cross AC |
-        # 
-        #
-        # placholder
-        return 1.0
+        ab = v1 - v0
+        ac = v2 - v0
+
+        return 0.5 * (tm.cross(ab, ac).norm())
 
     @ti.kernel
     def compute_cdf(self):
         # TODO: Compute the CDF of your emissive triangles
         # self.cdf[i] = ...
-        pass
+
+        sum = 0.0
+        ti.loop_config(serialize=True)
+        for i in range(self.n_emissive_triangles):
+            sum += self.emissive_triangle_areas[i] / self.total_emissive_area
+            self.cdf[i] = sum
 
     @ti.func
     def sample_emissive_triangle(self) -> int:
@@ -233,14 +233,14 @@ class MeshLightSampler:
         # return the **index** of the triangle
         #
         # placeholder
+
+        xi_triangle = ti.random()
         return 0
 
     @ti.func
     def evaluate_probability(self) -> float:
-        # TODO: return the probabilty of a sample
-        #
-        # placeholder
-        return 1.0
+        # TODO: return the probability of a sample
+        return 1.0 / self.total_emissive_area[None]
 
     @ti.func
     def sample_mesh_lights(self, hit_point: tm.vec3):
@@ -260,19 +260,30 @@ class MeshLightSampler:
 
         # TODO: Sample a direction towards your mesh light
         # given your sampled triangle vertices
-        # generat random barycentric coordinates
+        # generate random barycentric coordinates
+        xi_0 = ti.random()
+        xi_1 = ti.random()
+
+        if xi_0 > xi_1:
+            b0 = xi_0 / 2.0
+            b1 = xi_1 - b0
+        else:
+            b1 = xi_1 / 2.0
+            b0 = xi_0 - b1
+
+        b2 = 1.0 - b0 - b1
+
         # calculate the light direction
         # light direction = (point on light - hit point)
+        sampled_point = b0 * v0 + b1 * v1 + b2 * v2
+        light_direction = tm.normalize(sampled_point - hit_point)
         # don't forget to normalize!
 
-        # placeholder
-        light_direction = tm.vec3(1.0)
         return light_direction, sampled_light_triangle
 
 
 @ti.func
 def ortho_frames(v_z: tm.vec3) -> tm.mat3:
-
     random_vec = tm.normalize(tm.vec3([ti.random(), ti.random(), ti.random()]))
 
     x_axis = tm.cross(v_z, random_vec)
