@@ -198,7 +198,7 @@ class A2Renderer:
 
             # Check for direct hit on light
             if material.Ke.norm() > 0:
-                color = material.Ke  # TODO check for correctness
+                color = material.Ke
 
             else:
                 shading_point = ray.origin + ray.direction * hit_data.distance  # find intersection point
@@ -258,7 +258,7 @@ class A2Renderer:
                         color = l_e * BRDF.evaluate_brdf_factor(material, w_i, normal)
 
                 # Shadow ray occluded by mesh light
-                else:  # TODO check for correctness
+                else:
                     shadow_material = self.scene_data.material_library.materials[shadow_hit_data.material_id]
                     if shadow_material.Ke.norm() > 0:
                         l_e = shadow_material.Ke
@@ -426,13 +426,12 @@ class A3Renderer:
         color = tm.vec3(0.)
 
         if self.sample_mode[None] == int(self.SampleMode.UNIFORM) or self.sample_mode[None] == int(self.SampleMode.BRDF):
-            # Uniform or BRDF just calls the A2 renderer
-            # TODO: Check if A2 renderer is complete
+            # Call A2 renderer
             color = self.a2_renderer.shade_ray(ray)
+
         else:
             if self.sample_mode[None] == int(self.SampleMode.LIGHT):
 
-                # TODO: Implement Light Importance Sampling
                 hit_data = self.scene_data.ray_intersector.query_ray(ray)
 
                 if hit_data.is_hit:
@@ -454,10 +453,7 @@ class A3Renderer:
                         # Get shadow hit data
                         shadow_hit_data = self.scene_data.ray_intersector.query_ray(shadow_ray)
 
-                        if not shadow_hit_data.is_hit:
-                            pass
-
-                        else:
+                        if shadow_hit_data.is_hit:
                             shadow_hit_material = self.scene_data.material_library.materials[shadow_hit_data.material_id]
 
                             if shadow_hit_material.Ke.norm() > 0 and shadow_hit_data.triangle_id == triangle_id:
@@ -467,20 +463,13 @@ class A3Renderer:
                                 light_cos = tm.max(tm.dot(shadow_hit_data.normal, -w_i), 0)
                                 p_light = self.scene_data.mesh_light_sampler.evaluate_probability()
 
-                                shadow_hit_point = shadow_ray.origin + shadow_ray.direction * shadow_hit_data.distance
-                                distance = tm.pow((hit_point - shadow_hit_point).norm(), 2)
-
-                                color = l_e * f_r * hit_cos * light_cos / (p_light * distance)
+                                color = l_e * f_r * hit_cos * light_cos / (p_light * (shadow_hit_data.distance ** 2))
 
                 else:
-                    # TODO how to shade? using same computation as BRDF?
-                    # l_e = self.scene_data.environment.query_ray(ray)
-                    # f_r = BRDF.evaluate_brdf()
 
                     color = self.scene_data.environment.query_ray(ray)
 
             if self.sample_mode[None] == int(self.SampleMode.MIS):
-                pass
                 hit_data = self.scene_data.ray_intersector.query_ray(ray)
 
                 if hit_data.is_hit:
@@ -495,11 +484,12 @@ class A3Renderer:
                         hit_point = ray.origin + ray.direction * hit_data.distance
                         hit_material = self.scene_data.material_library.materials[hit_data.material_id]
 
-                        # TODO Sample incident direction depending on MIS probability
                         u = ti.random()
                         w_i = tm.vec3(0)
-                        if u < self.mis_plight:
-                            w_i, triangle_id = self.scene_data.mesh_light_sampler.sample_mesh_lights()
+                        triangle_id = 0
+
+                        if u < self.mis_plight[None]:
+                            w_i, triangle_id = self.scene_data.mesh_light_sampler.sample_mesh_lights(hit_point)
                         else:
                             w_i = BRDF.sample_direction(hit_material, -ray.direction, hit_data.normal)
 
@@ -510,26 +500,32 @@ class A3Renderer:
 
                         shadow_hit_data = self.scene_data.ray_intersector.query_ray(shadow_ray)
 
-                        # TODO implement shading for LIS
-                        # TODO implement shading for BRDF
+                        l_e = tm.vec3(0)
                         if not shadow_hit_data.is_hit:
-                            # TODO query environment. Should the computation be the same for LIS and BRDF?
                             l_e = self.scene_data.environment.query_ray(ray)
 
                         else:
                             shadow_hit_material = self.scene_data.material_library.materials[shadow_hit_data.material_id]
 
-                            # TODO check if occluded by mesh light
                             if shadow_hit_material.Ke.norm() > 0:
-                                if u < self.mis_plight:
-                                    # TODO if LIS and occluded by mesh light and triangles match
+                                if u < self.mis_plight[None]:
                                     if shadow_hit_data.triangle_id == triangle_id:
-                                        pass
+                                        l_e = shadow_hit_material.Ke
                                 else:
-                                    # TODO
-                                    pass
-                            
-                            pass
+                                    l_e = shadow_hit_material.Ke
+
+                        f_r = BRDF.evaluate_brdf(hit_material, -ray.direction, w_i, hit_data.normal)
+                        hit_cos = tm.max(tm.dot(hit_data.normal, w_i), 0)
+                        p_mis = self.mis_plight[None] * self.scene_data.mesh_light_sampler.evaluate_probability() + self.mis_pbrdf[None] * BRDF.evaluate_probability(hit_material, -ray.direction, w_i, hit_data.normal)
+
+                        if shadow_hit_data.is_hit:
+                            # Compute final color
+                            if u < self.mis_plight[None]:
+                                light_cos = tm.max(tm.dot(shadow_hit_data.normal, -w_i), 0)
+                                color = l_e * f_r * hit_cos * light_cos / (p_mis * (shadow_hit_data.distance ** 2))
+                            else:
+
+                                color = l_e * f_r * hit_cos / p_mis
 
                 else:
                     color = self.scene_data.environment.query_ray(ray)

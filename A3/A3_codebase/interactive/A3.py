@@ -14,7 +14,7 @@ from taichi_tracer.scene_data_loader import SceneName, EnvironmentName, load_sce
 
 
 def main():
-    scene_data = load_scene_data(SceneName.VEACH, EnvironmentName.STUDIO)
+    scene_data = load_scene_data(SceneName.VEACH, EnvironmentName.BLACK)
     renderer = A3Renderer(scene_data=scene_data, width=1024, height=512)
     window = ti.ui.Window("Interactive Renderer", res=renderer.canvas.shape)
     controller = CameraController(renderer.camera, window)

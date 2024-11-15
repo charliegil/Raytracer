@@ -210,7 +210,6 @@ class MeshLightSampler:
 
     @ti.func
     def compute_triangle_area(self, v0: tm.vec3, v1: tm.vec3, v2: tm.vec3) -> float:
-        # TODO: Compute Area of a triangle given the 3 vertices
         ab = v1 - v0
         ac = v2 - v0
 
@@ -218,55 +217,36 @@ class MeshLightSampler:
 
     @ti.kernel
     def compute_cdf(self):
-        pass
-        # TODO: Compute the CDF of your emissive triangles
-        # self.cdf[i] = ...
 
         cdf_sum = 0.0
         ti.loop_config(serialize=True)
         for i in range(self.n_emissive_triangles):
-            cdf_sum += self.emissive_triangle_areas[i] / self.total_emissive_area[None]
-            self.cdf[i] = cdf_sum
+            cdf_sum += self.emissive_triangle_areas[i]
+            self.cdf[i] = cdf_sum / self.total_emissive_area[None]
 
     @ti.func
     def sample_emissive_triangle(self) -> int:
-        # TODO: Sample an emissive triangle using the CDF
-        # return the **index** of the triangle
-        #
-        # placeholder
-
         xi_triangle = ti.random()  # get random variable [0, 1]
 
-        # Binary search - Algorithm inspired by GeeksForGeeks binary search implementation
-        # low = 0
-        # high = self.n_emissive_triangles - 1
-        #
-        # while low <= high:
-        #     mid = low + (high - low) // 2
-        #
-        #     if self.cdf[mid] >= xi_triangle:  # Look to the left of mid
-        #         high = mid
-        #     else:
-        #         low = mid + 1  # Look to the right of mid
+        # Binary search over cdf values
+        left = 0
+        right = self.n_emissive_triangles - 1
+        while left < right:
+            mid = (left + right) // 2
+            if self.cdf[mid] >= xi_triangle:
+                right = mid
+            else:
+                left = mid + 1
 
-        # TODO replace with binary search
-        index = 0
-        for i in range(self.n_emissive_triangles):
-            if self.cdf[i] >= xi_triangle:
-                index = i
-                break
-
-        return index
+        return left
 
     @ti.func
     def evaluate_probability(self) -> float:
-        # TODO: return the probability of a sample
         return 1.0 / self.total_emissive_area[None]
 
     @ti.func
     def sample_mesh_lights(self, hit_point: tm.vec3):
         sampled_light_triangle_idx = self.sample_emissive_triangle()
-        # sampled_light_triangle_idx = 0  TODO debugging
 
         sampled_light_triangle = self.emissive_triangle_ids[sampled_light_triangle_idx]
 
@@ -281,7 +261,6 @@ class MeshLightSampler:
         # https://www.pbr-book.org/4ed/Shapes/Triangle_Meshes#Sampling
         # https://www.pbr-book.org/4ed/Shapes/Triangle_Meshes#SampleUniformTriangle
 
-        # TODO: Sample a direction towards your mesh light
         # given your sampled triangle vertices
         # generate random barycentric coordinates
         xi_0 = ti.random()
@@ -290,7 +269,7 @@ class MeshLightSampler:
         b0 = 0.0
         b1 = 0.0
 
-        if xi_0 > xi_1:
+        if xi_0 < xi_1:
             b0 = xi_0 / 2.0
             b1 = xi_1 - b0
         else:
@@ -299,12 +278,9 @@ class MeshLightSampler:
 
         b2 = 1.0 - b0 - b1
 
-        # calculate the light direction
-        # light direction = (point on light - hit point)
+        # calculate the light direction (normalized)
         sampled_point = b0 * v0 + b1 * v1 + b2 * v2
         light_direction = tm.normalize(sampled_point - hit_point)
-
-        # don't forget to normalize!
 
         return light_direction, sampled_light_triangle
 
