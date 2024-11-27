@@ -48,15 +48,16 @@ class Environment:
         self.intensity = ti.field(dtype=float, shape=())
         self.set_intensity(1.)
 
-
     def set_intensity(self, intensity: float) -> None:
         self.intensity[None] = intensity
 
-
     @ti.func
     def query_ray(self, ray: Ray) -> tm.vec3:
-        #TODO: copy your A2 solution
-        pass
+        u = 0.5 + tm.atan2(ray.direction.z, ray.direction.x) / (2 * tm.pi)
+        v = 0.5 + tm.asin(ray.direction.y) / tm.pi
+        x = int(u * self.x_resolution)
+        y = int(v * self.y_resolution)
+        return self.image[x, y]
 
     @ti.kernel
     def precompute_envmap(self):

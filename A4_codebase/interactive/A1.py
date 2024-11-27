@@ -6,6 +6,7 @@ from taichi_tracer.renderer import A1Renderer
 from taichi_tracer.camera_controller import CameraController
 from taichi_tracer.scene_data_loader import SceneName, load_scene_data
 
+
 def main():
     scene_data = load_scene_data(SceneName.CORNELL_BOX)
     renderer = A1Renderer(scene_data=scene_data, width=512, height=512)
