@@ -610,18 +610,86 @@ class A4Renderer:
 
     @ti.func
     def shade_implicit(self, ray: Ray) -> tm.vec3:
-        color = tm.vec3(0.)
-
         # TODO A4: Implement Implicit Path Tracing
+
+        color = tm.vec3(0.)
+        throughput = tm.vec3(1.)
+
+        for _ in range(self.max_bounces[None] + 1):
+            hit_data = self.scene_data.ray_intersector.query_ray(ray)
+
+            if not hit_data.is_hit:
+                break
+
+            material = self.scene_data.material_library.materials[hit_data.material_id]
+
+            if material.Ke.norm() > 0:
+                color = material.Ke * throughput
+                break
+
+            hit_point = ray.origin + ray.direction * hit_data.distance
+
+            ray2 = Ray()
+            ray2.origin = hit_point + (self.RAY_OFFSET * hit_data.normal)
+            ray2.direction = BRDF.sample_direction(material, -ray.direction, hit_data.normal)
+
+            throughput *= BRDF.evaluate_brdf_factor(material, ray2.direction, hit_data.normal)
+
+            ray = ray2
 
         return color
     
     @ti.func
     def shade_explicit(self, ray: Ray) -> tm.vec3:
-        color = tm.vec3(0.)
-
         # TODO A4: Implement Explicit Path Tracing
         # TODO A4: Implement Russian Roulette Support
-            
+
+        color = tm.vec3(0.)
+        throughput = tm.vec3(1.)
+
+        hit_data = self.scene_data.ray_intersector.query_ray(ray)
+        material = self.scene_data.material_library.materials[hit_data.material_id]
+        hit_point = ray.origin + ray.direction * hit_data.distance
+
+        if material.Ke.norm() > 0:
+            color = material.Ke
+
+        else:
+            for _ in range(self.max_bounces[None]):
+
+                # Explicit ray
+                explicit_ray = Ray()
+                explicit_ray.origin = hit_point
+                explicit_ray.direction, triangle_id = self.scene_data.mesh_light_sampler.sample_mesh_lights(hit_point)
+
+                explicit_hit_data = self.scene_data.ray_intersector.query_ray(explicit_ray)
+                explicit_material = self.scene_data.material_library.materials[explicit_hit_data.material_id]
+
+                if explicit_hit_data.triangle_id == triangle_id:  # TODO add check for emissive material?
+                    l_e = explicit_material.Ke
+                    brdf_factor = BRDF.evaluate_brdf_factor(material, explicit_ray.direction, hit_data.normal)
+                    jacobian = tm.max(tm.dot(explicit_hit_data.normal, -explicit_ray.direction), 0) / (explicit_hit_data.distance ** 2)
+
+                    color += l_e * brdf_factor * jacobian * throughput
+
+                # Implicit ray
+                implicit_ray = Ray()
+                implicit_ray.origin = hit_point
+                implicit_ray.direction = BRDF.sample_direction(material, -ray.direction, hit_data.normal)
+
+                throughput *= BRDF.evaluate_brdf_factor(material, implicit_ray.direction, hit_data.normal)
+
+                implicit_hit_data = self.scene_data.ray_intersector.query_ray(implicit_ray)
+
+                if implicit_hit_data.is_hit:
+                    implicit_material = self.scene_data.material_library.materials[implicit_hit_data.material_id]
+                    if not implicit_material.Ke.norm() > 0:
+                        ray = implicit_ray
+                        hit_data = implicit_hit_data
+                    else:
+                        break
+                else:
+                    break
+
         return color
 

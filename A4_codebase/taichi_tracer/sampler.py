@@ -132,7 +132,6 @@ class BRDF:
 
 # Microfacet BRDF based on PBR 4th edition
 # https://www.pbr-book.org/4ed/Reflection_Models/Roughness_Using_Microfacet_Theory#
-# TODO: Implement Microfacet BRDF Methods
 # 546 only deliverable
 @ti.data_oriented
 class MicrofacetBRDF:

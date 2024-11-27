@@ -106,24 +106,24 @@ def main():
 
     renderer.set_shading_implicit()
 
-    for spp in spps:
-        for bounce in bounces:
-            renderer.reset()
-            renderer.max_bounces[None] = bounce
-            for _ in tqdm(range(spp), desc="Rendering Implicit Path Tracing with Caustics Image @ {N} bounces x {s} SPP".format(N=bounce, s=spp)):
-                renderer.render()
-            renderer.postprocess()
-
-            img = renderer.canvas_postprocessed.to_numpy()
-            img = np.rot90(np.clip(img, 0, 1))
-
-            title = "{N}_bounce_caustic_Implicit_path_tracing_{s}spp.png".format(N=bounce, s=spp)
-            title = prefix_outputpath + title
-            
-            plt.imshow(img)
-            plt.axis('off')
-            plt.savefig(title, bbox_inches='tight', pad_inches=0)
-            plt.clf()
+    # for spp in spps:
+    #     for bounce in bounces:
+    #         renderer.reset()
+    #         renderer.max_bounces[None] = bounce
+    #         for _ in tqdm(range(spp), desc="Rendering Implicit Path Tracing with Caustics Image @ {N} bounces x {s} SPP".format(N=bounce, s=spp)):
+    #             renderer.render()
+    #         renderer.postprocess()
+    #
+    #         img = renderer.canvas_postprocessed.to_numpy()
+    #         img = np.rot90(np.clip(img, 0, 1))
+    #
+    #         title = "{N}_bounce_caustic_Implicit_path_tracing_{s}spp.png".format(N=bounce, s=spp)
+    #         title = prefix_outputpath + title
+    #
+    #         plt.imshow(img)
+    #         plt.axis('off')
+    #         plt.savefig(title, bbox_inches='tight', pad_inches=0)
+    #         plt.clf()
     
 
 
