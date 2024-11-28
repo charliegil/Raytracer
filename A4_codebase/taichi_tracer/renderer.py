@@ -618,7 +618,7 @@ class A4Renderer:
         for _ in range(self.max_bounces[None] + 1):
             hit_data = self.scene_data.ray_intersector.query_ray(ray)
 
-            if not hit_data.is_hit:
+            if not hit_data.is_hit or hit_data.is_backfacing:
                 break
 
             material = self.scene_data.material_library.materials[hit_data.material_id]
