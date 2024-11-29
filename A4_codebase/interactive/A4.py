@@ -37,7 +37,7 @@ def main():
             renderer.set_shading_explicit()
 
         renderer.max_bounces[None] = window.GUI.slider_int("max bounces", renderer.max_bounces[None], 0, 20)
-        renderer.rr_termination_probabilty[None] = window.GUI.slider_float("RR termination p", renderer.rr_termination_probabilty[None], 0.0, 0.999)
+        renderer.rr_termination_probability[None] = window.GUI.slider_float("RR termination p", renderer.rr_termination_probability[None], 0.0, 0.999)
 
         window.GUI.end()
 
@@ -50,6 +50,7 @@ def main():
         renderer.postprocess()
         window.get_canvas().set_image(renderer.canvas_postprocessed)
         window.show()
+
 
 if __name__ == "__main__":
     main()

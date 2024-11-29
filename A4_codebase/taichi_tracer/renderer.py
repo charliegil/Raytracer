@@ -569,8 +569,8 @@ class A4Renderer:
         self.max_bounces = ti.field(dtype=int, shape=())
         self.max_bounces[None] = 5
 
-        self.rr_termination_probabilty = ti.field(dtype=float, shape=())
-        self.rr_termination_probabilty[None] = 0.0
+        self.rr_termination_probability = ti.field(dtype=float, shape=())
+        self.rr_termination_probability[None] = 0.0
 
         self.shading_mode = ti.field(shape=(), dtype=int)
         self.set_shading_implicit()
@@ -596,7 +596,6 @@ class A4Renderer:
         self.canvas.fill(0.)
         self.iter_counter.fill(0.)
 
-
     @ti.func
     def shade_ray(self, ray: Ray) -> tm.vec3:
         color = tm.vec3(0.)
@@ -610,7 +609,6 @@ class A4Renderer:
 
     @ti.func
     def shade_implicit(self, ray: Ray) -> tm.vec3:
-        # TODO A4: Implement Implicit Path Tracing
 
         color = tm.vec3(0.)
         throughput = tm.vec3(1.)
@@ -644,51 +642,58 @@ class A4Renderer:
         # TODO A4: Implement Explicit Path Tracing
         # TODO A4: Implement Russian Roulette Support
 
-        color = tm.vec3(0.)
-        throughput = tm.vec3(1.)
+        color = tm.vec3(0.)  # initialize color
+        throughput = tm.vec3(1.)  # initialize throughput
 
-        hit_data = self.scene_data.ray_intersector.query_ray(ray)
+        hit_data = self.scene_data.ray_intersector.query_ray(ray)  # get hit data for initial ray (0 bounce)
         material = self.scene_data.material_library.materials[hit_data.material_id]
-        hit_point = ray.origin + ray.direction * hit_data.distance
 
+        # Direct hit on light
         if material.Ke.norm() > 0:
             color = material.Ke
 
         else:
             for _ in range(self.max_bounces[None]):
+                hit_point = ray.origin + ray.direction * hit_data.distance
+                material = self.scene_data.material_library.materials[hit_data.material_id]
 
-                # Explicit ray
+                # Explicit path tracing
                 explicit_ray = Ray()
-                explicit_ray.origin = hit_point
+                explicit_ray.origin = hit_point + (self.RAY_OFFSET * hit_data.normal)
                 explicit_ray.direction, triangle_id = self.scene_data.mesh_light_sampler.sample_mesh_lights(hit_point)
 
-                explicit_hit_data = self.scene_data.ray_intersector.query_ray(explicit_ray)
-                explicit_material = self.scene_data.material_library.materials[explicit_hit_data.material_id]
+                explicit_hit_data = self.scene_data.ray_intersector.query_ray(explicit_ray)  # get intersection with mesh light
+                explicit_material = self.scene_data.material_library.materials[explicit_hit_data.material_id]  # get light material
 
-                if explicit_hit_data.triangle_id == triangle_id:  # TODO add check for emissive material?
-                    l_e = explicit_material.Ke
-                    brdf_factor = BRDF.evaluate_brdf_factor(material, explicit_ray.direction, hit_data.normal)
-                    jacobian = tm.max(tm.dot(explicit_hit_data.normal, -explicit_ray.direction), 0) / (explicit_hit_data.distance ** 2)
+                if explicit_hit_data.triangle_id == triangle_id and not explicit_hit_data.is_backfacing:
+                    l_e = explicit_material.Ke  # light color
+                    f_r = BRDF.evaluate_brdf(material, -ray.direction, explicit_ray.direction, hit_data.normal)  # brdf(diffuse material, -ray.direction, explicit ray direction, diffuse normal)
+                    hit_cos = tm.max(tm.dot(hit_data.normal, explicit_ray.direction), 0)  # tm.dot(diffuse normal, explicit ray direction)
+                    light_cos = tm.max(tm.dot(explicit_hit_data.normal, -explicit_ray.direction), 0)  # tm.dot(light normal, -explicit ray direction)
+                    p_light = self.scene_data.mesh_light_sampler.evaluate_probability()
 
-                    color += l_e * brdf_factor * jacobian * throughput
+                    color += l_e * f_r * hit_cos * light_cos / (p_light * (explicit_hit_data.distance ** 2)) * throughput
 
-                # Implicit ray
+                # Round-robin
+                rr = ti.random()
+                if rr < self.rr_termination_probability[None]:
+                    break
+
+                # Implicit ray tracing
                 implicit_ray = Ray()
-                implicit_ray.origin = hit_point
+                implicit_ray.origin = hit_point + (self.RAY_OFFSET * hit_data.normal)
                 implicit_ray.direction = BRDF.sample_direction(material, -ray.direction, hit_data.normal)
 
-                throughput *= BRDF.evaluate_brdf_factor(material, implicit_ray.direction, hit_data.normal)
+                throughput *= BRDF.evaluate_brdf_factor(material, implicit_ray.direction, hit_data.normal) / (1 - self.rr_termination_probability[None]) # update throughput with implicit contribution
 
                 implicit_hit_data = self.scene_data.ray_intersector.query_ray(implicit_ray)
+                implicit_material = self.scene_data.material_library.materials[implicit_hit_data.material_id]
 
-                if implicit_hit_data.is_hit:
-                    implicit_material = self.scene_data.material_library.materials[implicit_hit_data.material_id]
-                    if not implicit_material.Ke.norm() > 0:
-                        ray = implicit_ray
-                        hit_data = implicit_hit_data
-                    else:
-                        break
-                else:
+                if implicit_hit_data.is_hit and not implicit_material.Ke.norm() > 0:  # if not emissive hit
+                    # Move to next diffuse point on light path
+                    ray = implicit_ray
+                    hit_data = implicit_hit_data
+                else:  # don't double count light contribution
                     break
 
         return color
