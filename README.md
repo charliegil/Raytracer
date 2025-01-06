@@ -1,7 +1,3 @@
-# Raytracer
-
-Through the course of ECSE 446, I implemented a raytracer, gradually adding features for each deliverable, which built upon the previous.
-
 ## 1. Triangle Intersections and Normal Interpolation
 
 In this assignment, I implemented a simple ray tracer with triangle intersection capabilities and normal interpolation for smooth shading. The environment supports basic scene navigation using the **WASD** keys and includes multiple shading modes to visualize different aspects of our scene.
